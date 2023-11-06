@@ -1,0 +1,65 @@
+@namespace YogIT.Module.VideoN
+@inherits ModuleBase
+@inject ISettingService SettingService
+@inject IStringLocalizer<Settings> Localizer
+
+<div class="container">
+    <div class="row mb-1 align-items-center">
+        <div class="form-check">
+            <input id="useCdn" type="checkbox" class="form-check-input" @bind="@_useCdn" />
+            <Label Class="form-check-label" For="useCdn" HelpText="Use CDN to load video.js file from vjs.zencdn.net.  When unchecked, bundled version is loaded v8.6.1." ResourceKey="UseCdn" ResourceType="@resourceType">Use CDN to load video.js: </Label>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string resourceType = "YogIT.Module.VideoN.Settings, YogIT.Module.VideoN.Client.Oqtane"; // for localization
+    public override string Title => "VideoN Settings";
+
+    bool _useCdn;
+    string _scriptUrl;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Dictionary<string, string> settings = await SettingService.GetModuleSettingsAsync(ModuleState.ModuleId);
+            _scriptUrl = SettingService.GetSetting(settings, "ScriptUrl", "");
+            if (string.IsNullOrEmpty(_scriptUrl)) 
+            {
+                _useCdn = true;
+                _scriptUrl = "https://vjs.zencdn.net/8.6.1/video.min.js";
+            }
+            else
+            {
+                _useCdn = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            ModuleInstance.AddModuleMessage(ex.Message, MessageType.Error);
+        }
+    }
+
+    public async Task UpdateSettings()
+    {
+        try
+        {
+            Dictionary<string, string> settings = await SettingService.GetModuleSettingsAsync(ModuleState.ModuleId);
+            if (_useCdn)
+            {
+                _scriptUrl = "https://vjs.zencdn.net/8.6.1/video.min.js";
+            }
+            else
+            {
+                _scriptUrl = ModulePath() + "videojs/videojs.min.js";
+            }
+            SettingService.SetSetting(settings, "ScriptUrl", _scriptUrl);
+            await SettingService.UpdateModuleSettingsAsync(settings, ModuleState.ModuleId);
+        }
+        catch (Exception ex)
+        {
+            ModuleInstance.AddModuleMessage(ex.Message, MessageType.Error);
+        }
+    }
+}

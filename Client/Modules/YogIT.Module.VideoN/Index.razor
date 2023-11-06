@@ -1,0 +1,84 @@
+@using YogIT.Module.VideoN.Services
+@using YogIT.Module.VideoN.Models
+
+@namespace YogIT.Module.VideoN
+@inherits ModuleBase
+@inject IVideoNService VideoNService
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<Index> Localizer
+@inject ISettingService SettingService
+
+@if (_videoNs == null)
+{
+    <p><em>@Localizer["Message.Loading"]</em></p>
+}
+else
+{
+    <div class="mb-2">
+        <ActionLink Action="Add" Security="SecurityAccessLevel.Edit" Text="Add Video" ResourceKey="Add" />
+    </div>
+    @if (@_videoNs.Count == 0)
+    {
+        <p>@Localizer["Message.DisplayNone"]</p>
+    }
+    else
+    {
+        <Pager Items="@_videoNs" Format="Grid" ColumnClass="@_gridColumnCss" PageSize="@_pageSize.ToString()">
+            <Row>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            @context.Title
+                        </h5>
+                        <div class="card-body">
+                            <ActionLink Action="View" Parameters="@($"id=" + context.VideoNId.ToString())" ResourceKey="View" />
+                        </div>
+                    </div>
+                </div>
+                <div class="pt-1"><ActionLink Action="Edit" Parameters="@($"id=" + context.VideoNId.ToString())" ResourceKey="Edit"  />
+                <ActionDialog Header="Delete Video" Message="Please confirm, delete this video?" Action="Delete" Security="SecurityAccessLevel.Edit" Class="btn btn-danger" OnClick="@(async () => await Delete(context))" ResourceKey="Delete" /></div>
+            </Row>
+        </Pager>
+    }
+}
+
+@code {
+    public override List<Resource> Resources => new List<Resource>()
+    {
+        new Resource { ResourceType = ResourceType.Stylesheet, Url = ModulePath() + "Module.css" },
+        new Resource { ResourceType = ResourceType.Script, Url = ModulePath() + "Module.js" }
+    };
+
+    List<VideoN> _videoNs;
+    private string _gridColumnCss = "col-lg-4 col-12";
+    private int _pageSize = 9;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _videoNs = await VideoNService.GetVideoNsAsync(ModuleState.ModuleId);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading VideoN {Error}", ex.Message);
+            AddModuleMessage(Localizer["Message.LoadError"], MessageType.Error);
+        }
+    }
+
+    private async Task Delete(VideoN VideoN)
+    {
+        try
+        {
+            await VideoNService.DeleteVideoNAsync(VideoN.VideoNId, ModuleState.ModuleId);
+            await logger.LogInformation("VideoN Deleted {VideoN}", VideoN);
+            _videoNs = await VideoNService.GetVideoNsAsync(ModuleState.ModuleId);
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Deleting VideoN {VideoN} {Error}", VideoN, ex.Message);
+            AddModuleMessage(Localizer["Message.DeleteError"], MessageType.Error);
+        }
+    }
+}

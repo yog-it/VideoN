@@ -1,0 +1,53 @@
+﻿@using YogIT.Module.VideoN.Models
+@using YogIT.Module.VideoN.Services
+
+@namespace YogIT.Module.VideoN
+@inherits LocalizableComponent
+@inject IStringLocalizer<Index> Localizer
+@inject IVideoNService VideoNService
+
+@if (_videoN == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <h3>@_videoN.Title</h3>
+    <Player Id="@_playerKey.ToString()" Url="@_videoN.Url" @key="_playerKey" />
+}
+
+@code {
+    private VideoN _videoN;
+    private string _playerKey;
+
+    public override List<Resource> Resources => new List<Resource>()
+    {
+        new Resource { ResourceType = Oqtane.Shared.ResourceType.Script, Url = ModulePath() + "videojs/videojs.min.js" },  
+        new Resource { ResourceType = Oqtane.Shared.ResourceType.Stylesheet, Url = ModulePath() + "videojs/videojs.min.css" }, 
+        new Resource { ResourceType = Oqtane.Shared.ResourceType.Stylesheet, Url = ModulePath() + "Module.css" }
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var id = Int32.Parse(PageState.QueryString["id"]);
+        try
+        {
+            Random generator = new Random();
+            _playerKey = generator.Next(0, 100000).ToString();
+            _videoN = await VideoNService.GetVideoNAsync(id, ModuleState.ModuleId);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading VideoN {VideoNId} {Error}", id, ex.Message);
+            AddModuleMessage(Localizer["Message.LoadError"], MessageType.Error);
+        }
+    }
+
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
+    // {
+    //     if (firstRender)
+    //     {
+    //         await JSRuntime.InvokeAsync<IJSObjectReference>("import", ModulePath() + "videojs/videojs.min.js");
+    //     }
+    // }
+}

@@ -1,0 +1,33 @@
+﻿@namespace YogIT.Module.VideoN
+@inherits LocalizableComponent
+
+<video id="@($"vjs-player-{Id}")" class="video-js vjs-big-play-centered video-player"></video>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    [Parameter]
+    public string Url { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("YogIT.VideoN.playVideo", $"vjs-player-{Id}", new
+            {
+                controls = true,
+                autoplay = false,
+                preload = "auto",
+                techOrder = new[] { "html5" },
+                sources = new[] {
+                    new { type =  "video/mp4", src = @Url}
+        }
+            });
+        }
+    }
+    // public async ValueTask DisposeAsync()
+    // {
+    //     await JSRuntime.InvokeVoidAsync("YogIT.VideoN.disposePlayer", $"vjs-player-{Id}");
+    // }
+}
