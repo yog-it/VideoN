@@ -26,6 +26,7 @@ else
         <Pager Items="@_videoNs" Format="Grid" ColumnClass="@_columnCssClass" PageSize="@_pageSize.ToString()">
             <Row>
                 <div class="card">
+                    <img src="@context.Poster" class="card-img-top" alt="@context.Title">
                     <div class="card-body">
                         <h5 class="card-title">
                             @context.Title

@@ -6,14 +6,11 @@
 @inject IStringLocalizer<Index> Localizer
 @inject IVideoNService VideoNService
 
-@if (_videoN == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
+@if (_videoN != null)
 {
     <h3>@_videoN.Title</h3>
-    <Player Id="@_playerKey.ToString()" Url="@_videoN.Url" @key="_playerKey" />
+    <Player Id="@_playerKey.ToString()" Url="@_videoN.Source" Poster="@_videoN.Poster" @key="_playerKey" />
+    <div>@_videoN.Description</div>
 }
 
 @code {
@@ -42,12 +39,4 @@ else
             AddModuleMessage(Localizer["Message.LoadError"], MessageType.Error);
         }
     }
-
-    // protected override async Task OnAfterRenderAsync(bool firstRender)
-    // {
-    //     if (firstRender)
-    //     {
-    //         await JSRuntime.InvokeAsync<IJSObjectReference>("import", ModulePath() + "videojs/videojs.min.js");
-    //     }
-    // }
 }

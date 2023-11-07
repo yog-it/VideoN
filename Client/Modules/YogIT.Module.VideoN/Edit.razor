@@ -17,9 +17,21 @@
             </div>
         </div>
         <div class="row mb-1 align-items-center">
-            <Label Class="col-sm-3" For="title" HelpText="Video URL" ResourceKey="Url">URL: </Label>
+            <Label Class="col-sm-3" For="source" HelpText="Please enter the video source URL" ResourceKey="Source">Video Source: </Label>
             <div class="col-sm-9">
-                <input id="url" class="form-control" @bind="@_url" required />
+                <input id="source" class="form-control" @bind="@_source" required />
+            </div>
+        </div>
+        <div class="row mb-1 align-items-center">
+            <Label Class="col-sm-3" For="poster" HelpText="Please enter the video poster image URL" ResourceKey="Poster">Poster Image: </Label>
+            <div class="col-sm-9">
+                <input id="poster" class="form-control" @bind="@_poster" />
+            </div>
+        </div>
+        <div class="row mb-1 align-items-center">
+            <Label Class="col-sm-3" For="description" HelpText="Please enter a short description about the video." ResourceKey="Description">Description: </Label>
+            <div class="col-sm-9">
+                <input id="description" class="form-control" @bind="@_description" />
             </div>
         </div>
     </div>
@@ -49,7 +61,9 @@
 
     private int _id;
     private string _title;
-    private string _url;
+    private string _source;
+    private string _poster;
+    private string _description;
     private string _createdby;
     private DateTime _createdon;
     private string _modifiedby;
@@ -66,7 +80,9 @@
                 if (VideoN != null)
                 {
                     _title = VideoN.Title;
-                    _url = VideoN.Url;
+                    _source = VideoN.Source;
+                    _poster = VideoN.Poster;
+                    _description = VideoN.Description;
                     _createdby = VideoN.CreatedBy;
                     _createdon = VideoN.CreatedOn;
                     _modifiedby = VideoN.ModifiedBy;
@@ -94,7 +110,9 @@
                     VideoN VideoN = new VideoN();
                     VideoN.ModuleId = ModuleState.ModuleId;
                     VideoN.Title = _title;
-                    VideoN.Url = _url;
+                    VideoN.Source = _source;
+                    VideoN.Poster = _poster;
+                    VideoN.Description = _description;
                     VideoN = await VideoNService.AddVideoNAsync(VideoN);
                     await logger.LogInformation("VideoN Added {VideoN}", VideoN);
                 }
@@ -102,7 +120,9 @@
                 {
                     VideoN VideoN = await VideoNService.GetVideoNAsync(_id, ModuleState.ModuleId);
                     VideoN.Title = _title;
-                    VideoN.Url = _url; 
+                    VideoN.Source = _source;
+                    VideoN.Poster = _poster;
+                    VideoN.Description = _description;
                     await VideoNService.UpdateVideoNAsync(VideoN);
                     await logger.LogInformation("VideoN Updated {VideoN}", VideoN);
                 }
