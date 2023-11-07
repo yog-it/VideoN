@@ -23,7 +23,7 @@ else
     }
     else
     {
-        <Pager Items="@_videoNs" Format="Grid" ColumnClass="@_gridColumnCss" PageSize="@_pageSize.ToString()">
+        <Pager Items="@_videoNs" Format="Grid" ColumnClass="@_columnCssClass" PageSize="@_pageSize.ToString()">
             <Row>
                 <div class="card">
                     <div class="card-body">
@@ -50,14 +50,16 @@ else
     };
 
     List<VideoN> _videoNs;
-    private string _gridColumnCss = "col-lg-4 col-12";
-    private int _pageSize = 9;
+    private string _columnCssClass;
+    private int _pageSize;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
             _videoNs = await VideoNService.GetVideoNsAsync(ModuleState.ModuleId);
+            _pageSize = int.Parse(SettingService.GetSetting(ModuleState.Settings, "PageSize", "9"));
+            _columnCssClass = SettingService.GetSetting(ModuleState.Settings, "SettingColumnCssClass", "col-xl-3 col-lg-4 col-md-6 col-12");
         }
         catch (Exception ex)
         {

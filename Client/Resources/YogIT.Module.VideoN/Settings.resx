@@ -117,10 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="UseCdn.HelpText" xml:space="preserve">
-    <value>Use CDN to load video.js file.  When unchecked, bundled version is loaded v8.6.1.</value>
+  <data name="ColumnCssClass.HelpText" xml:space="preserve">
+    <value>Bootstrap classes for each column in the grid.</value>
   </data>
-  <data name="UseCdn.Text" xml:space="preserve">
-    <value>Use CDN to load video.js:</value>
+  <data name="ColumnCssClass.Text" xml:space="preserve">
+    <value>Column CSS Class:</value>
   </data>
 </root>
