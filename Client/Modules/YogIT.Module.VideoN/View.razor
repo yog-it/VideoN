@@ -30,7 +30,7 @@
         try
         {
             Random generator = new Random();
-            _playerKey = generator.Next(0, 100000).ToString();
+            _playerKey = generator.Next(100000, 999999).ToString();
             _videoN = await VideoNService.GetVideoNAsync(id, ModuleState.ModuleId);
         }
         catch (Exception ex)

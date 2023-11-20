@@ -12,9 +12,12 @@ namespace YogIT.Module.VideoN.Models
         public int VideoNId { get; set; }
         public int ModuleId { get; set; }
         public string Title { get; set; }
+        public string SourceType { get; set; }
         public string Source { get; set; }
+        public int? VideoFileId { get; set; }
         public string Description { get; set; }
         public string Poster { get; set; }
+        public int? PosterFileId { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public string ModifiedBy { get; set; }
