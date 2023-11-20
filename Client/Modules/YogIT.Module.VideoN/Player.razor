@@ -1,4 +1,5 @@
 ﻿@namespace YogIT.Module.VideoN
+@using System.Threading;
 @inherits LocalizableComponent
 
 <video id="@($"vjs-player-{Id}")" class="video-js vjs-big-play-centered video-player"></video>
@@ -17,6 +18,9 @@
     {
         if (firstRender)
         {
+            //TODO: find a better way to wait for the videojs library to be loaded
+            int milliseconds = 500; // pause for 1/2 second while videojs loads in separate thread
+            Thread.Sleep(milliseconds);
             await JSRuntime.InvokeVoidAsync("YogIT.VideoN.playVideo", $"vjs-player-{Id}", new
             {
                 controls = true,
