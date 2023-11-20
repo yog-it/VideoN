@@ -1,5 +1,153 @@
-﻿<h3>ServerFiles</h3>
+﻿@using YogIT.Module.VideoN.Models
+@using YogIT.Module.VideoN.Services;
 
+@namespace YogIT.Module.VideoN
+@inherits ModuleBase
+@inject IVideoNService VideoNService
+@inject NavigationManager NavigationManager
+@inject IFileService FileService
+@inject IStringLocalizer<ServerFiles> Localizer
+
+@if (_videoN == null)
+{
+    <em>@Localizer["Message.Loading"]</em>
+}
+else
+{
+    <form @ref="form" class="@(validated ? " was-validated" : "needs-validation" )" novalidate>
+        <div class="row mb-1 align-items-center">
+            <Label Class="col-sm-3" For="title" HelpText="Enter the video title" ResourceKey="Title" ResourceType="@_resourceType">Title: </Label>
+            <div class="col-sm-9">
+                <input id="title" class="form-control" @bind="@_videoN.Title" required />
+            </div>
+        </div>
+        <div class="row mb-1 align-items-center">
+            <Label Class="col-sm-3" For="videoFile" HelpText="Please select a video file from the file system or upload a new one" ResourceKey="VideoFile" ResourceType="@_resourceType">Video: </Label>
+            <div class="col-sm-9">
+                <FileManager FileId="@_videoFileId" Filter="mp4,avi,webm,flv,qt,mov" @ref="_videoFilemanager" />
+            </div>
+        </div>
+        <div class="row mb-1 align-items-center">
+            <Label Class="col-sm-3" For="posterFile" HelpText="Please select a poster image file from the file system or upload a new one" ResourceKey="PosterFile" ResourceType="@_resourceType">Poster Image: </Label>
+            <div class="col-sm-9">
+                <FileManager FileId="@_posterFileId" Filter="@Constants.ImageFiles" @ref="_posterFilemanager" />
+            </div>
+        </div>
+        <div class="row mb-1 align-items-center">
+            <Label Class="col-sm-3" For="description" HelpText="Please enter a short description about the video." ResourceKey="Description" ResourceType="@_resourceType">Description: </Label>
+            <div class="col-sm-9">
+                <input id="description" class="form-control" @bind="@_videoN.Description" />
+            </div>
+        </div>
+        <div>
+            <button type="button" class="btn btn-success" @onclick="Save">@Localizer["Save"]</button>
+            <NavLink class="btn btn-secondary" href="@NavigateUrl()">@Localizer["Cancel"]</NavLink>
+            <br /><br />
+            @if (PageState.Action == "Edit")
+            {
+                <AuditInfo CreatedBy="@_createdby" CreatedOn="@_createdon" ModifiedBy="@_modifiedby" ModifiedOn="@_modifiedon"></AuditInfo>
+            }
+        </div>
+    </form>
+}
 @code {
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Edit;
+    private string _resourceType = "YogIT.Module.VideoN.ServerFiles, YogIT.Module.VideoN.Client.Oqtane"; // for localization
+    public override List<Resource> Resources => new List<Resource>()
+    {
+        new Resource { ResourceType = ResourceType.Stylesheet, Url = ModulePath() + "Module.css" }
+    };
 
+    [Parameter]
+    public int Id { get; set; }
+
+    private ElementReference form;
+    private bool validated = false;
+    private FileManager _videoFilemanager;
+    private FileManager _posterFilemanager;
+    private int _videoFileId = -1;
+    private int _posterFileId = -1;
+    private VideoN _videoN;
+    private string _createdby;
+    private DateTime _createdon;
+    private string _modifiedby;
+    private DateTime _modifiedon;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            if (PageState.Action == "Edit")
+            {
+                _videoN = await VideoNService.GetVideoNAsync(Id, ModuleState.ModuleId);
+                if (_videoN != null)
+                {
+                    _videoFileId = _videoN.VideoFileId != null ? (int)_videoN.VideoFileId : 0;
+                    _posterFileId = _videoN.PosterFileId != null ? (int)_videoN.PosterFileId : 0;
+                    _createdby = _videoN.CreatedBy;
+                    _createdon = _videoN.CreatedOn;
+                }
+            }
+            if (_videoN == null)
+            {
+                _videoN = new VideoN { ModuleId = ModuleState.ModuleId };
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading VideoN {VideoNId} {Error}", Id, ex.Message);
+            AddModuleMessage(Localizer["Message.LoadError"], MessageType.Error);
+        }
+    }
+
+    private async Task Save()
+    {
+        try
+        {
+            validated = true;
+            var interop = new Oqtane.UI.Interop(JSRuntime);
+            if (await interop.FormValid(form))
+            {
+                _videoN.VideoFileId = _videoFilemanager.GetFileId();
+                _videoN.PosterFileId = _posterFilemanager.GetFileId();
+                _videoN.SourceType = "Server";
+                _videoN.Source = await GetFileUrl(_videoFilemanager.GetFileId());
+                _videoN.Poster = await GetFileUrl(_posterFilemanager.GetFileId());
+
+                if (PageState.Action == "Add")
+                {
+                    _videoN = await VideoNService.AddVideoNAsync(_videoN);
+                    await logger.LogInformation("VideoN Added {VideoN}", _videoN);
+                }
+                else
+                {
+                    await VideoNService.UpdateVideoNAsync(_videoN);
+                    await logger.LogInformation("VideoN Updated {VideoN}", _videoN);
+                }
+                NavigationManager.NavigateTo(NavigateUrl());
+            }
+            else
+            {
+                AddModuleMessage(Localizer["Message.SaveValidation"], MessageType.Warning);
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Saving VideoN {Error}", ex.Message);
+            AddModuleMessage(Localizer["Message.SaveError"], MessageType.Error);
+        }
+    }
+
+    private async Task<string> GetFileUrl(int? fileId)
+    {
+        if (fileId != null)
+        {
+            var file = await FileService.GetFileAsync((int)fileId);
+            if (file != null)
+            {
+                return file.Url;
+            }
+        }
+        return string.Empty;
+    }
 }

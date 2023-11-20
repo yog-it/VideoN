@@ -105,15 +105,14 @@ else
             var interop = new Oqtane.UI.Interop(JSRuntime);
             if (await interop.FormValid(form))
             {
+                _videoN.SourceType = "WebUrl";
                 if (PageState.Action == "Add")
                 {
-                    _videoN.SourceType = "WebUrl";
                     _videoN = await VideoNService.AddVideoNAsync(_videoN);
                     await logger.LogInformation("VideoN Added {VideoN}", _videoN);
                 }
                 else
                 {
-                    _videoN.SourceType = "WebUrl";
                     await VideoNService.UpdateVideoNAsync(_videoN);
                     await logger.LogInformation("VideoN Updated {VideoN}", _videoN);
                 }
