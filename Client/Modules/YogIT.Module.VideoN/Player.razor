@@ -14,6 +14,12 @@
     [Parameter]
     public string Poster { get; set; }
 
+    [Parameter]
+    public string TechOrder { get; set; }
+
+    [Parameter]
+    public string SourceType { get; set; }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -26,10 +32,10 @@
                 controls = true,
                 autoplay = false,
                 preload = "auto",
-                techOrder = new[] { "html5" },
-                poster = Poster,
+                techOrder = new[] { @TechOrder },
+                poster = @Poster,
                 sources = new[] {
-                    new { type =  "video/mp4", src = @Url}
+                    new { type =  @SourceType, src = @Url}
         }
             });
         }

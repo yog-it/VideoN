@@ -13,6 +13,8 @@ namespace YogIT.Module.VideoN.Models
         public int ModuleId { get; set; }
         public string Title { get; set; }
         public string SourceType { get; set; }
+        [NotMapped]
+        public string TechOrder { get; set; }
         public string Source { get; set; }
         public int? VideoFileId { get; set; }
         public string Description { get; set; }

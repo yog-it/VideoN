@@ -29,6 +29,9 @@
         <div class="@_server">
             <ServerFiles Id="@_id"></ServerFiles>
         </div>
+        <div class="@_youTube">
+            <YouTube Id="@_id"></YouTube>
+        </div>
     </div>
 }
 
@@ -51,6 +54,7 @@
     private string _sourceType = "";
     private string _server = "d-none";
     private string _webUrl = "d-none";
+    private string _youTube = "d-none";
 
     protected override async Task OnInitializedAsync()
     {
@@ -86,6 +90,8 @@
     {
         _server = "d-none";
         _webUrl = "d-none";
+        _youTube = "d-none";
+
         switch (_sourceType)
         {
             case "Server":
@@ -93,6 +99,9 @@
                 break;
             case "WebUrl":
                 _webUrl = "";
+                break;
+            case "YouTube":
+                _youTube = "";
                 break;
         }
     }

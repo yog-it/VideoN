@@ -9,7 +9,7 @@
 @if (_videoN != null)
 {
     <h3>@_videoN.Title</h3>
-    <Player Id="@_playerKey.ToString()" Url="@_videoN.Source" Poster="@_videoN.Poster" @key="_playerKey" />
+    <Player Id="@_playerKey.ToString()" Url="@_videoN.Source" Poster="@_videoN.Poster" TechOrder="@_videoN.TechOrder" @key="_playerKey" />
     <div>@_videoN.Description</div>
 }
 
@@ -32,6 +32,9 @@
             Random generator = new Random();
             _playerKey = generator.Next(100000, 999999).ToString();
             _videoN = await VideoNService.GetVideoNAsync(id, ModuleState.ModuleId);
+            _videoN.TechOrder = _videoN.SourceType.Equals("YouTube") ? "youtube" : "html5";
+            _videoN.SourceType = _videoN.SourceType.Equals("YouTube") ? "video/youtube" : "video/mp4";
+            _videoN.Poster = string.IsNullOrEmpty(_videoN.Poster) ? ModulePath() + "videojs/poster.png" : _videoN.Poster;
         }
         catch (Exception ex)
         {

@@ -36,6 +36,16 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Player.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\YogIT.Module.VideoN\ServerFiles.Designer.cs">
+      <DependentUpon>ServerFiles.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Resources\YogIT.Module.VideoN\YouTube.Designer.cs">
+      <DependentUpon>YouTube.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Resources\YogIT.Module.VideoN\WebUrl.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -47,6 +57,14 @@
     <EmbeddedResource Update="Resources\YogIT.Module.VideoN\Player.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Player.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\YogIT.Module.VideoN\ServerFiles.resx">
+      <LastGenOutput>ServerFiles.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\YogIT.Module.VideoN\YouTube.resx">
+      <LastGenOutput>YouTube.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\YogIT.Module.VideoN\WebUrl.resx">
       <Generator>ResXFileCodeGenerator</Generator>
