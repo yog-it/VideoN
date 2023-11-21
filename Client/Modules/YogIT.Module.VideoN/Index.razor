@@ -32,7 +32,7 @@ else
                             @context.Title
                         </h5>
                         <div class="card-body">
-                            <ActionLink Action="View" Parameters="@($"id=" + context.VideoNId.ToString())" ResourceKey="View" />
+                            <ActionLink Action="View" Parameters="@($"id=" + context.VideoNId.ToString())" ResourceKey="View" Class="btn btn-primary stretched-link" />
                         </div>
                     </div>
                 </div>
@@ -59,6 +59,11 @@ else
         try
         {
             _videoNs = await VideoNService.GetVideoNsAsync(ModuleState.ModuleId);
+            foreach (var videoN in _videoNs)
+            {
+                videoN.Poster = string.IsNullOrEmpty(videoN.Poster) ? ModulePath() + "videojs/poster.png" : videoN.Poster;
+                videoN.Poster = videoN.SourceType.Equals("YouTube") ? "https://img.youtube.com/vi/" + videoN.Source + "/0.jpg" : videoN.Poster;
+            }
             _pageSize = int.Parse(SettingService.GetSetting(ModuleState.Settings, "PageSize", "9"));
             _columnCssClass = SettingService.GetSetting(ModuleState.Settings, "SettingColumnCssClass", "col-xl-3 col-lg-4 col-md-6 col-12");
         }
