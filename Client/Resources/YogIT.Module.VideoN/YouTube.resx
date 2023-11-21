@@ -139,10 +139,10 @@
     <value>Save</value>
   </data>
   <data name="Source.HelpText" xml:space="preserve">
-    <value>Please enter the URL of the video</value>
+    <value>Please enter the YouTube video ID.  It is located within the URL of the shared link.</value>
   </data>
   <data name="Source.Text" xml:space="preserve">
-    <value>Video Source:</value>
+    <value>YouTube Video ID:</value>
   </data>
   <data name="Title.HelpText" xml:space="preserve">
     <value>Enter the name</value>

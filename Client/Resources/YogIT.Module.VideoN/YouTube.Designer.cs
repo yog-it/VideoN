@@ -124,7 +124,7 @@ namespace YogIT.Module.VideoN.Client.Resources.YogIT.Module.VideoN {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please enter the URL of the video.
+        ///   Looks up a localized string similar to Please enter the YouTube video ID.  It is located within the URL of the shared link..
         /// </summary>
         internal static string Source_HelpText {
             get {
@@ -133,7 +133,7 @@ namespace YogIT.Module.VideoN.Client.Resources.YogIT.Module.VideoN {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Video Source:.
+        ///   Looks up a localized string similar to YouTube Video ID:.
         /// </summary>
         internal static string Source_Text {
             get {

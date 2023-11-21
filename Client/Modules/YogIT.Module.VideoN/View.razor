@@ -3,16 +3,20 @@
 
 @namespace YogIT.Module.VideoN
 @inherits LocalizableComponent
-@inject IStringLocalizer<Index> Localizer
+@inject IStringLocalizer<View> Localizer
 @inject IVideoNService VideoNService
 
 @if (_videoN != null)
 {
     <h3>@_videoN.Title</h3>
-    <Player Id="@_playerKey.ToString()" Url="@_videoN.Source" Poster="@_videoN.Poster" TechOrder="@_videoN.TechOrder" @key="_playerKey" />
+    <Player Id="@_playerKey.ToString()" Url="@_videoN.Source" SourceType="@_videoN.SourceType" Poster="@_videoN.Poster" TechOrder="@_videoN.TechOrder" @key="_playerKey" />
     <div>@_videoN.Description</div>
 }
-
+<div class="row">
+    <div class="col-sm-12">
+        <NavLink class="btn btn-secondary" href="@NavigateUrl()">@Localizer["Back"]</NavLink>
+    </div>
+</div>
 @code {
     private VideoN _videoN;
     private string _playerKey;
@@ -20,7 +24,8 @@
     public override List<Resource> Resources => new List<Resource>()
     {
         new Resource { ResourceType = Oqtane.Shared.ResourceType.Script, Url = ModulePath() + "videojs/videojs.min.js" },  
-        new Resource { ResourceType = Oqtane.Shared.ResourceType.Stylesheet, Url = ModulePath() + "videojs/videojs.min.css" }, 
+        new Resource { ResourceType = Oqtane.Shared.ResourceType.Script, Url = ModulePath() + "videojs/Youtube.min.js" },
+        new Resource { ResourceType = Oqtane.Shared.ResourceType.Stylesheet, Url = ModulePath() + "videojs/videojs.min.css" },
         new Resource { ResourceType = Oqtane.Shared.ResourceType.Stylesheet, Url = ModulePath() + "Module.css" }
     };
 
@@ -32,9 +37,22 @@
             Random generator = new Random();
             _playerKey = generator.Next(100000, 999999).ToString();
             _videoN = await VideoNService.GetVideoNAsync(id, ModuleState.ModuleId);
-            _videoN.TechOrder = _videoN.SourceType.Equals("YouTube") ? "youtube" : "html5";
-            _videoN.SourceType = _videoN.SourceType.Equals("YouTube") ? "video/youtube" : "video/mp4";
-            _videoN.Poster = string.IsNullOrEmpty(_videoN.Poster) ? ModulePath() + "videojs/poster.png" : _videoN.Poster;
+
+            string poster = string.IsNullOrEmpty(_videoN.Poster) ? ModulePath() + "videojs/poster.png" : _videoN.Poster;
+
+            if (_videoN.SourceType.Equals("YouTube"))
+            {
+                _videoN.TechOrder = "youtube";
+                _videoN.SourceType = "video/youtube";
+                poster = "";
+                _videoN.Source = "https://www.youtube.com/watch?v=" + _videoN.Source;
+            }
+            else
+            {
+                _videoN.TechOrder = "html5";
+                _videoN.SourceType = "video/mp4";
+            }
+            _videoN.Poster = poster;
         }
         catch (Exception ex)
         {
