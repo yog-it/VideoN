@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Oqtane.Modules;
 using Oqtane.Services;
 using Oqtane.Shared;
-using YogIT.Module.VideoN.Models;
 
 namespace YogIT.Module.VideoN.Services
 {
@@ -17,7 +16,7 @@ namespace YogIT.Module.VideoN.Services
 
         public async Task<List<Models.VideoN>> GetVideoNsAsync(int ModuleId)
         {
-            List<Models.VideoN> VideoNs = await GetJsonAsync<List<Models.VideoN>>(CreateAuthorizationPolicyUrl($"{Apiurl}?moduleid={ModuleId}", EntityNames.Module, ModuleId), Enumerable.Empty<Models.VideoN>().ToList());
+            List<Models.VideoN> VideoNs = await GetJsonAsync(CreateAuthorizationPolicyUrl($"{Apiurl}?moduleid={ModuleId}", EntityNames.Module, ModuleId), Enumerable.Empty<Models.VideoN>().ToList());
             return VideoNs.OrderBy(item => item.Title).ToList();
         }
 
@@ -28,12 +27,12 @@ namespace YogIT.Module.VideoN.Services
 
         public async Task<Models.VideoN> AddVideoNAsync(Models.VideoN VideoN)
         {
-            return await PostJsonAsync<Models.VideoN>(CreateAuthorizationPolicyUrl($"{Apiurl}", EntityNames.Module, VideoN.ModuleId), VideoN);
+            return await PostJsonAsync(CreateAuthorizationPolicyUrl($"{Apiurl}", EntityNames.Module, VideoN.ModuleId), VideoN);
         }
 
         public async Task<Models.VideoN> UpdateVideoNAsync(Models.VideoN VideoN)
         {
-            return await PutJsonAsync<Models.VideoN>(CreateAuthorizationPolicyUrl($"{Apiurl}/{VideoN.VideoNId}", EntityNames.Module, VideoN.ModuleId), VideoN);
+            return await PutJsonAsync(CreateAuthorizationPolicyUrl($"{Apiurl}/{VideoN.VideoNId}", EntityNames.Module, VideoN.ModuleId), VideoN);
         }
 
         public async Task DeleteVideoNAsync(int VideoNId, int ModuleId)

@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Collections.Generic;
 using Oqtane.Modules;
-using YogIT.Module.VideoN.Models;
 
 namespace YogIT.Module.VideoN.Repository
 {

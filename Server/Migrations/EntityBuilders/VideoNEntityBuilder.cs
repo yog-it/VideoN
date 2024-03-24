@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore.Migrations.Operations.Builders;
 using Oqtane.Databases.Interfaces;
 using Oqtane.Migrations;
 using Oqtane.Migrations.EntityBuilders;
-using Oqtane.Models;
 
 namespace YogIT.Module.VideoN.Migrations.EntityBuilders
 {
