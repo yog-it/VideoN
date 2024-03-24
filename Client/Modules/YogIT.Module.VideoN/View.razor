@@ -12,11 +12,6 @@
     <Player Id="@_playerKey.ToString()" Url="@_videoN.Source" SourceType="@_videoN.SourceType" Poster="@_videoN.Poster" TechOrder="@_videoN.TechOrder" @key="_playerKey" />
     <div>@_videoN.Description</div>
 }
-<div class="row">
-    <div class="col-sm-12">
-        <NavLink class="btn btn-secondary" href="@NavigateUrl()">@Localizer["Back"]</NavLink>
-    </div>
-</div>
 @code {
     private VideoN _videoN;
     private string _playerKey;
