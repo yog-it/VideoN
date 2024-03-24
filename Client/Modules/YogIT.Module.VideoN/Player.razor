@@ -2,7 +2,7 @@
 @using System.Threading;
 @inherits LocalizableComponent
 
-<video id="@($"vjs-player-{Id}")" class="video-js vjs-big-play-centered vjs-fill video-player"></video>
+<video id="@($"vjs-player-{Id}")" class="video-js video-player"></video>
 
 @code {
     [Parameter]
@@ -32,12 +32,12 @@
                 controls = true,
                 autoplay = false,
                 preload = "auto",
-                height = "100%",
+                fluid = true,
                 poster = @Poster,
                 techOrder = new[] { @TechOrder },
                 sources = new[] {
                     new { type =  @SourceType, src = @Url}
-        }
+                }
             });
         }
     }
