@@ -14,10 +14,12 @@ To install, there are two methods.  One by using the code base:
 1. Clone the repository into a directory at the same level as your Oqtane installation.
 1. Open the solution in Visual Studio.
 1. Build the solution in release.
-1. Install the NuGet package created in the build folder.
+1. Start IIS Express.
+1. The package will automatically install.
 
 Or, by downloading the NuGet package from the releases page:
 
 1. Download the NuGet package from the releases page.
 1. Install the NuGet package into your Oqtane installation.
   
+Simply add the module to a page and configure the settings.
