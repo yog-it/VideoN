@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,10 +117,43 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ColumnCssClass.HelpText" xml:space="preserve">
-    <value>Bootstrap classes for each column in the grid.</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
   </data>
-  <data name="ColumnCssClass.Text" xml:space="preserve">
-    <value>Column CSS Class:</value>
+  <data name="Description.HelpText" xml:space="preserve">
+    <value>Please enter a short description about the video.</value>
+  </data>
+  <data name="Description.Text" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Message.LoadError" xml:space="preserve">
+    <value>Error Loading VideoN</value>
+  </data>
+  <data name="Message.SaveError" xml:space="preserve">
+    <value>Error Saving VideoN</value>
+  </data>
+  <data name="Message.SaveValidation" xml:space="preserve">
+    <value>Please Provide All Required Information</value>
+  </data>
+  <data name="Poster.HelpText" xml:space="preserve">
+    <value>Please enter the poster image URL.</value>
+  </data>
+  <data name="Poster.Text" xml:space="preserve">
+    <value>Poster Image:</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Source.HelpText" xml:space="preserve">
+    <value>Please enter the URL of the video</value>
+  </data>
+  <data name="Source.Text" xml:space="preserve">
+    <value>Video Source:</value>
+  </data>
+  <data name="Title.HelpText" xml:space="preserve">
+    <value>Enter the name</value>
+  </data>
+  <data name="Title.Text" xml:space="preserve">
+    <value>Name: </value>
   </data>
 </root>

@@ -1,0 +1,127 @@
+﻿@using YogIT.Module.VideoN.Models
+@using YogIT.Module.VideoN.Services;
+
+@namespace YogIT.Module.VideoN
+@inherits ModuleBase
+@inject IVideoNService VideoNService
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<YouTube> Localizer
+
+@if (_videoN == null)
+{
+    <em>@Localizer["Message.Loading"]</em>
+}
+else
+{
+    <form @ref="form" class="@(validated ? " was-validated" : "needs-validation" )" novalidate>
+        <div class="row mb-1 align-items-center">
+            <Label Class="col-sm-3" For="title" HelpText="Enter the video title" ResourceKey="Title" ResourceType="@_resourceType">Title: </Label>
+            <div class="col-sm-9">
+                <input id="title" class="form-control" @bind="@_videoN.Title" required />
+            </div>
+        </div>
+        <div class="row mb-1 align-items-center">
+            <Label Class="col-sm-3" For="source" HelpText="Please enter the YouTube video ID.  It is located within the URL of the shared link." ResourceKey="Source" ResourceType="@_resourceType">YouTube Video ID: </Label>
+            <div class="col-sm-9">
+                <input id="source" class="form-control" @bind="@_videoN.Source" required />
+            </div>
+        </div>
+        <div class="row mb-1 align-items-center">
+            <Label Class="col-sm-3" For="description" HelpText="Please enter a short description about the video (optional)." ResourceKey="Description" ResourceType="@_resourceType">Description: </Label>
+            <div class="col-sm-9">
+                <input id="description" class="form-control" @bind="@_videoN.Description" />
+            </div>
+        </div>
+        <div>
+            <button type="button" class="btn btn-success" @onclick="Save">@Localizer["Save"]</button>
+            <NavLink class="btn btn-secondary" href="@NavigateUrl()">@Localizer["Cancel"]</NavLink>
+            <br /><br />
+            @if (PageState.Action == "Edit")
+            {
+                <AuditInfo CreatedBy="@_createdby" CreatedOn="@_createdon" ModifiedBy="@_modifiedby" ModifiedOn="@_modifiedon"></AuditInfo>
+            }
+        </div>
+    </form>
+}
+@code {
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Edit;
+    private string _resourceType = "YogIT.Module.VideoN.YouTube, YogIT.Module.VideoN.Client.Oqtane"; // for localization
+    public override List<Resource> Resources => new List<Resource>()
+    {
+        new Resource { ResourceType = ResourceType.Stylesheet, Url = ModulePath() + "Module.css" }
+    };
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private ElementReference form;
+    private bool validated = false;
+
+    private VideoN _videoN;
+    private string _createdby;
+    private DateTime _createdon;
+    private string _modifiedby;
+    private DateTime _modifiedon;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            if (PageState.Action == "Edit")
+            {
+                _videoN = await VideoNService.GetVideoNAsync(Id, ModuleState.ModuleId);
+                if (_videoN != null)
+                {
+                    _createdby = _videoN.CreatedBy;
+                    _createdon = _videoN.CreatedOn;
+                }
+            }
+            if (_videoN == null)
+            {
+                _videoN = new VideoN
+                    {
+                        ModuleId = ModuleState.ModuleId
+                    };
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading VideoN {VideoNId} {Error}", Id, ex.Message);
+            AddModuleMessage(Localizer["Message.LoadError"], MessageType.Error);
+        }
+    }
+
+    private async Task Save()
+    {
+        try
+        {
+            validated = true;
+            var interop = new Oqtane.UI.Interop(JSRuntime);
+            if (await interop.FormValid(form))
+            {
+                _videoN.SourceType = "YouTube";
+                if (PageState.Action == "Add")
+                {
+                    _videoN = await VideoNService.AddVideoNAsync(_videoN);
+                    await logger.LogInformation("VideoN Added {VideoN}", _videoN);
+                }
+                else
+                {
+                    await VideoNService.UpdateVideoNAsync(_videoN);
+                    await logger.LogInformation("VideoN Updated {VideoN}", _videoN);
+                }
+                NavigationManager.NavigateTo(NavigateUrl());
+            }
+            else
+            {
+                AddModuleMessage(Localizer["Message.SaveValidation"], MessageType.Warning);
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Saving VideoN {Error}", ex.Message);
+            AddModuleMessage(Localizer["Message.SaveError"], MessageType.Error);
+        }
+    }
+
+}

@@ -8,29 +8,33 @@
 @inject NavigationManager NavigationManager
 @inject IStringLocalizer<Edit> Localizer
 
-<form @ref="form" class="@(validated ? " was-validated" : "needs-validation" )" novalidate>
+@if (_videoN != null)
+{
     <div class="container">
         <div class="row mb-1 align-items-center">
-            <Label Class="col-sm-3" For="title" HelpText="Enter the video title" ResourceKey="Title">Title: </Label>
+            <Label Class="col-sm-3" For="source" HelpText="Select the video source location" ResourceKey="Source">Source Location: </Label>
             <div class="col-sm-9">
-                <input id="title" class="form-control" @bind="@_title" required />
+                <select id="source-type" class="form-control" value="@_sourceType" required @onchange="ChangeSourceType">
+                    <option value="">@Localizer["SelectSourceType.Text"]</option>
+                    <option value="Server">@Localizer["Server.Text"]</option>
+                    <option value="YouTube">@Localizer["YouTube.Text"]</option>
+                    <option value="WebUrl">@Localizer["WebUrl.Text"]</option>
+                </select>
             </div>
         </div>
-        <div class="row mb-1 align-items-center">
-            <Label Class="col-sm-3" For="title" HelpText="Video URL" ResourceKey="Url">URL: </Label>
-            <div class="col-sm-9">
-                <input id="url" class="form-control" @bind="@_url" required />
-            </div>
+        <div class="@_webUrl">
+            <WebUrl Id="@_id"></WebUrl>
+        </div>
+        <div class="@_server">
+            <ServerFiles Id="@_id"></ServerFiles>
+        </div>
+        <div class="@_youTube">
+            <YouTube Id="@_id"></YouTube>
         </div>
     </div>
-    <button type="button" class="btn btn-success" @onclick="Save">@Localizer["Save"]</button>
-    <NavLink class="btn btn-secondary" href="@NavigateUrl()">@Localizer["Cancel"]</NavLink>
-    <br /><br />
-    @if (PageState.Action == "Edit")
-    {
-    <AuditInfo CreatedBy="@_createdby" CreatedOn="@_createdon" ModifiedBy="@_modifiedby" ModifiedOn="@_modifiedon"></AuditInfo>
-    }
-</form>
+}
+
+
 
 @code {
     public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Edit;
@@ -44,16 +48,12 @@
         new Resource { ResourceType = ResourceType.Stylesheet, Url = ModulePath() + "Module.css" }
     };
 
-    private ElementReference form;
-    private bool validated = false;
-
     private int _id;
-    private string _title;
-    private string _url;
-    private string _createdby;
-    private DateTime _createdon;
-    private string _modifiedby;
-    private DateTime _modifiedon;
+    private VideoN _videoN;
+    private string _sourceType = "";
+    private string _server = "d-none";
+    private string _webUrl = "d-none";
+    private string _youTube = "d-none";
 
     protected override async Task OnInitializedAsync()
     {
@@ -62,16 +62,13 @@
             if (PageState.Action == "Edit")
             {
                 _id = Int32.Parse(PageState.QueryString["id"]);
-                VideoN VideoN = await VideoNService.GetVideoNAsync(_id, ModuleState.ModuleId);
-                if (VideoN != null)
-                {
-                    _title = VideoN.Title;
-                    _url = VideoN.Url;
-                    _createdby = VideoN.CreatedBy;
-                    _createdon = VideoN.CreatedOn;
-                    _modifiedby = VideoN.ModifiedBy;
-                    _modifiedon = VideoN.ModifiedOn;
-                }
+                _videoN = await VideoNService.GetVideoNAsync(_id, ModuleState.ModuleId);
+                _sourceType = _videoN.SourceType;
+                SetSourceType();
+            }
+            if (_videoN == null)
+            {
+                _videoN = new VideoN();
             }
         }
         catch (Exception ex)
@@ -81,42 +78,30 @@
         }
     }
 
-    private async Task Save()
+    private Task ChangeSourceType(ChangeEventArgs e)
     {
-        try
+        _sourceType = e.Value.ToString();
+        SetSourceType();
+        return Task.CompletedTask;
+    }
+
+    private void SetSourceType()
+    {
+        _server = "d-none";
+        _webUrl = "d-none";
+        _youTube = "d-none";
+
+        switch (_sourceType)
         {
-            validated = true;
-            var interop = new Oqtane.UI.Interop(JSRuntime);
-            if (await interop.FormValid(form))
-            {
-                if (PageState.Action == "Add")
-                {
-                    VideoN VideoN = new VideoN();
-                    VideoN.ModuleId = ModuleState.ModuleId;
-                    VideoN.Title = _title;
-                    VideoN.Url = _url;
-                    VideoN = await VideoNService.AddVideoNAsync(VideoN);
-                    await logger.LogInformation("VideoN Added {VideoN}", VideoN);
-                }
-                else
-                {
-                    VideoN VideoN = await VideoNService.GetVideoNAsync(_id, ModuleState.ModuleId);
-                    VideoN.Title = _title;
-                    VideoN.Url = _url; 
-                    await VideoNService.UpdateVideoNAsync(VideoN);
-                    await logger.LogInformation("VideoN Updated {VideoN}", VideoN);
-                }
-                NavigationManager.NavigateTo(NavigateUrl());
-            }
-            else
-            {
-                AddModuleMessage(Localizer["Message.SaveValidation"], MessageType.Warning);
-            }
-        }
-        catch (Exception ex)
-        {
-            await logger.LogError(ex, "Error Saving VideoN {Error}", ex.Message);
-            AddModuleMessage(Localizer["Message.SaveError"], MessageType.Error);
+            case "Server":
+                _server = "";
+                break;
+            case "WebUrl":
+                _webUrl = "";
+                break;
+            case "YouTube":
+                _youTube = "";
+                break;
         }
     }
 }

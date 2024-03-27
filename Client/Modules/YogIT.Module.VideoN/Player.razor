@@ -1,7 +1,8 @@
 ﻿@namespace YogIT.Module.VideoN
+@using System.Threading;
 @inherits LocalizableComponent
 
-<video id="@($"vjs-player-{Id}")" class="video-js vjs-big-play-centered video-player"></video>
+<video id="@($"vjs-player-{Id}")" class="video-js video-player"></video>
 
 @code {
     [Parameter]
@@ -10,24 +11,34 @@
     [Parameter]
     public string Url { get; set; }
 
+    [Parameter]
+    public string Poster { get; set; }
+
+    [Parameter]
+    public string TechOrder { get; set; }
+
+    [Parameter]
+    public string SourceType { get; set; }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
+            //TODO: find a better way to wait for the videojs library to be loaded
+            int milliseconds = 500; // pause for 1/2 second while videojs loads in separate thread
+            Thread.Sleep(milliseconds);
             await JSRuntime.InvokeVoidAsync("YogIT.VideoN.playVideo", $"vjs-player-{Id}", new
             {
                 controls = true,
                 autoplay = false,
                 preload = "auto",
-                techOrder = new[] { "html5" },
+                fluid = true,
+                poster = @Poster,
+                techOrder = new[] { @TechOrder },
                 sources = new[] {
-                    new { type =  "video/mp4", src = @Url}
-        }
+                    new { type =  @SourceType, src = @Url}
+                }
             });
         }
     }
-    // public async ValueTask DisposeAsync()
-    // {
-    //     await JSRuntime.InvokeVoidAsync("YogIT.VideoN.disposePlayer", $"vjs-player-{Id}");
-    // }
 }

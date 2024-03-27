@@ -5,9 +5,15 @@
 
 <div class="container">
     <div class="row mb-1 align-items-center">
-        <div class="form-check">
-            <input id="useCdn" type="checkbox" class="form-check-input" @bind="@_useCdn" />
-            <Label Class="form-check-label" For="useCdn" HelpText="Use CDN to load video.js file from vjs.zencdn.net.  When unchecked, bundled version is loaded v8.6.1." ResourceKey="UseCdn" ResourceType="@resourceType">Use CDN to load video.js: </Label>
+        <Label Class="col-sm-3" For="items" ResourceKey="Items" ResourceType="@resourceType" HelpText="Enter the maximum items per page">Items Per Page: </Label>
+        <div class="col-sm-9">
+            <input id="items" type="text" class="form-control" @bind="@_pageSize" maxlength="1" required />
+        </div>
+    </div>
+    <div class="row mb-1 align-items-center">
+        <Label Class="col-sm-3" For="columnCssClass" HelpText="Bootstrap classes for each column in the grid." ResourceKey="ColumnCssClass" ResourceType="@resourceType">Column CSS Class: </Label>
+        <div class="col-sm-9">
+            <input id="columnCssClass" type="text" class="form-control" @bind="@_columnCssClass" />
         </div>
     </div>
 </div>
@@ -16,28 +22,20 @@
     private string resourceType = "YogIT.Module.VideoN.Settings, YogIT.Module.VideoN.Client.Oqtane"; // for localization
     public override string Title => "VideoN Settings";
 
-    bool _useCdn;
-    string _scriptUrl;
+    private string _pageSize;
+    private string _columnCssClass;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
             Dictionary<string, string> settings = await SettingService.GetModuleSettingsAsync(ModuleState.ModuleId);
-            _scriptUrl = SettingService.GetSetting(settings, "ScriptUrl", "");
-            if (string.IsNullOrEmpty(_scriptUrl)) 
-            {
-                _useCdn = true;
-                _scriptUrl = "https://vjs.zencdn.net/8.6.1/video.min.js";
-            }
-            else
-            {
-                _useCdn = false;
-            }
+            _pageSize = SettingService.GetSetting(ModuleState.Settings, "PageSize", "9");
+            _columnCssClass = SettingService.GetSetting(settings, "ColumnCssClass", "col-xl-3 col-lg-4 col-md-6 col-12");
         }
         catch (Exception ex)
         {
-            ModuleInstance.AddModuleMessage(ex.Message, MessageType.Error);
+            AddModuleMessage(ex.Message, MessageType.Error);
         }
     }
 
@@ -46,20 +44,14 @@
         try
         {
             Dictionary<string, string> settings = await SettingService.GetModuleSettingsAsync(ModuleState.ModuleId);
-            if (_useCdn)
-            {
-                _scriptUrl = "https://vjs.zencdn.net/8.6.1/video.min.js";
-            }
-            else
-            {
-                _scriptUrl = ModulePath() + "videojs/videojs.min.js";
-            }
-            SettingService.SetSetting(settings, "ScriptUrl", _scriptUrl);
+            settings = SettingService.SetSetting(settings, "PageSize", _pageSize);
+            settings = SettingService.SetSetting(settings, "ColumnCssClass", _columnCssClass);
+
             await SettingService.UpdateModuleSettingsAsync(settings, ModuleState.ModuleId);
         }
         catch (Exception ex)
         {
-            ModuleInstance.AddModuleMessage(ex.Message, MessageType.Error);
+            AddModuleMessage(ex.Message, MessageType.Error);
         }
     }
 }

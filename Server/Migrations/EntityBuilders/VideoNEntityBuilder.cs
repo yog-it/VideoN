@@ -22,10 +22,15 @@ namespace YogIT.Module.VideoN.Migrations.EntityBuilders
 
         protected override VideoNEntityBuilder BuildTable(ColumnsBuilder table)
         {
-            VideoNId = AddAutoIncrementColumn(table,"VideoNId");
-            ModuleId = AddIntegerColumn(table,"ModuleId");
-            Title = AddStringColumn(table,"Title",256);
-            Url = AddStringColumn(table,"Url",2000);
+            VideoNId = AddAutoIncrementColumn(table, "VideoNId");
+            ModuleId = AddIntegerColumn(table, "ModuleId");
+            Title = AddStringColumn(table, "Title", 256);
+            SourceType = AddStringColumn(table, "SourceType", 50);
+            Source = AddStringColumn(table, "Source", 2000);
+            VideoFileId = AddIntegerColumn(table, "VideoFileId", true);
+            Poster = AddStringColumn(table, "Poster", 2000, true);
+            PosterFileId = AddIntegerColumn(table, "PosterFileId", true);
+            Description = AddMaxStringColumn(table, "Description", true);
             AddAuditableColumns(table);
             return this;
         }
@@ -33,6 +38,12 @@ namespace YogIT.Module.VideoN.Migrations.EntityBuilders
         public OperationBuilder<AddColumnOperation> VideoNId { get; set; }
         public OperationBuilder<AddColumnOperation> ModuleId { get; set; }
         public OperationBuilder<AddColumnOperation> Title { get; set; }
-        public OperationBuilder<AddColumnOperation> Url { get; set; }
+        public OperationBuilder<AddColumnOperation> SourceType { get; set; }
+        public OperationBuilder<AddColumnOperation> VideoFileId { get; set; }
+        public OperationBuilder<AddColumnOperation> PosterFileId { get; set; }
+        public OperationBuilder<AddColumnOperation> Source { get; set; }
+        public OperationBuilder<AddColumnOperation> Poster { get; set; }
+        public OperationBuilder<AddColumnOperation> Description { get; set; }
+
     }
 }

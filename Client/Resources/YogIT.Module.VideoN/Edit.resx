@@ -138,10 +138,37 @@
   <data name="Message.SaveError" xml:space="preserve">
     <value>Error Saving VideoN</value>
   </data>
-  <data name="Url.HelpText" xml:space="preserve">
+  <data name="Source.HelpText" xml:space="preserve">
     <value>Please enter the URL of the video</value>
   </data>
-  <data name="Url.Text" xml:space="preserve">
-    <value>Url:</value>
+  <data name="Source.Text" xml:space="preserve">
+    <value>Video Source:</value>
+  </data>
+  <data name="Description.HelpText" xml:space="preserve">
+    <value>Please enter a short description about the video.</value>
+  </data>
+  <data name="Description.Text" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Poster.HelpText" xml:space="preserve">
+    <value>Please enter the poster image URL.</value>
+  </data>
+  <data name="Poster.Text" xml:space="preserve">
+    <value>Poster Image:</value>
+  </data>
+  <data name="Azure.Text" xml:space="preserve">
+    <value>Azure Storage</value>
+  </data>
+  <data name="SelectSourceType.Text" xml:space="preserve">
+    <value>&lt;Select Source Location&gt;</value>
+  </data>
+  <data name="Server.Text" xml:space="preserve">
+    <value>Web Server Files</value>
+  </data>
+  <data name="WebUrl.Text" xml:space="preserve">
+    <value>Web URL</value>
+  </data>
+  <data name="YouTube.Text" xml:space="preserve">
+    <value>YouTube</value>
   </data>
 </root>
