@@ -3,12 +3,6 @@ VideoN is a video player module for Oqtane that uses the video.js library.  It c
 
 This pre-release version of VideoN is a work in progress and is not yet ready for production use. Feel free to download the NuGet package and install it into your non-production sites and applications.
 
-Help us build this Open Source streaming video player for Oqtane. 
-
-* Please report any issues found. Instructions to reproduce the issue are always helpful.
-* If you're a developer you may help by fixing issues and adding features to the project.
-* Sponsorship is always welcome.
-
 To install, there are two methods.  One by using the code base:
 
 1. Clone the repository into a directory at the same level as your Oqtane installation.
@@ -23,3 +17,9 @@ Or, by downloading the NuGet package from the releases page:
 1. Install the NuGet package into your Oqtane installation.
   
 Simply add the module to a page and configure the settings.
+
+Help us build this open source streaming video player for Oqtane. 
+
+* Please report any issues found. Instructions to reproduce the issue are always helpful.
+* If you're a developer you may help by fixing issues and adding features to the project.
+* Sponsorship is always welcome.
